@@ -1,0 +1,73 @@
+package api
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+
+	"github.com/petrick-ribeiro/go-todo/types"
+)
+
+func (s *APIServer) handleTodo(w http.ResponseWriter, r *http.Request) error {
+	if r.Method == "GET" {
+		return s.handleGetTodo(w, r)
+	}
+
+	if r.Method == "POST" {
+		return s.handlePostTodo(w, r)
+	}
+
+	return fmt.Errorf("method %s not supported", r.Method)
+}
+
+func (s *APIServer) handleTodoByID(w http.ResponseWriter, r *http.Request) error {
+	if r.Method == "GET" {
+		return s.handleGetTodoByID(w, r)
+	}
+
+	// DELETE
+
+	// PUT
+
+	return fmt.Errorf("method %s not supported", r.Method)
+}
+
+func (s *APIServer) handleGetTodo(w http.ResponseWriter, r *http.Request) error {
+	todos, err := s.storage.GetAll()
+	if err != nil {
+		return err
+	}
+
+	return WriteJSON(w, http.StatusOK, todos)
+}
+
+func (s *APIServer) handleGetTodoByID(w http.ResponseWriter, r *http.Request) error {
+	id, err := GetID(r)
+	if err != nil {
+		return err
+	}
+
+	todo, err := s.storage.Get(id)
+	if err != nil {
+		return err
+	}
+
+	return WriteJSON(w, http.StatusOK, todo)
+}
+
+func (s *APIServer) handlePostTodo(w http.ResponseWriter, r *http.Request) error {
+	req := new(types.CreateTodoRequest)
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		return err
+	}
+
+	todo := types.NewTodo(req.Title, req.Description)
+
+	if err := s.storage.Insert(todo); err != nil {
+		return err
+	}
+
+	return WriteJSON(w, http.StatusOK, todo)
+}
+
+// TODO: Create handlers for DELETE and PUT methods

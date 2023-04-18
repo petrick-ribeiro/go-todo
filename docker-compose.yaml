@@ -1,0 +1,28 @@
+version: '3'
+
+networks:
+  api_net:
+
+services:
+  api:
+    image: gotodo:1.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gotodo
+    restart: always
+    ports:
+      - 9000:9000
+    networks:
+      - api_net
+    depends_on:
+      - db
+  
+  db:
+    image: postgres:alpine3.17
+    container_name: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=Foobar123!
+    networks:
+      - api_net
