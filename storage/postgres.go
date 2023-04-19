@@ -74,7 +74,30 @@ func (s *PostgresStorage) Insert(todo *types.Todo) error {
 	return nil
 }
 
-func (s *PostgresStorage) Update() {
+func (s *PostgresStorage) Update(ut *types.Todo, id uint64) (*types.Todo, error) {
+	todo := types.Todo{}
+	result := s.db.First(&todo, id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	if ut.Title != "" {
+		todo.Title = ut.Title
+	}
+
+	if ut.Description != "" {
+		todo.Description = ut.Description
+	}
+
+	todo.UpdatedAt = ut.UpdatedAt
+	todo.Done = ut.Done
+
+	result = s.db.Save(&todo)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &todo, nil
 }
 
 func (s *PostgresStorage) Delete() {
