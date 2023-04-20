@@ -29,7 +29,9 @@ func (s *APIServer) handleTodoByID(w http.ResponseWriter, r *http.Request) error
 		return s.handlePutTodoByID(w, r)
 	}
 
-	// DELETE
+	if r.Method == "DELETE" {
+		return s.handleDeleteByID(w, r)
+	}
 
 	return fmt.Errorf("method %s not supported", r.Method)
 }
@@ -91,4 +93,18 @@ func (s *APIServer) handlePutTodoByID(w http.ResponseWriter, r *http.Request) er
 	}
 
 	return WriteJSON(w, http.StatusOK, updatedTodo)
+}
+
+func (s *APIServer) handleDeleteByID(w http.ResponseWriter, r *http.Request) error {
+	id, err := GetID(r)
+	if err != nil {
+		return err
+	}
+
+	todo, err := s.storage.Delete(id)
+	if err != nil {
+		return err
+	}
+
+	return WriteJSON(w, http.StatusOK, todo)
 }

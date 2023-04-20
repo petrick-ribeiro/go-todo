@@ -11,7 +11,7 @@ RUN go build -o bin/gotodo
 # Execute in alpine container
 FROM alpine:3.17
 RUN apk add --no-cache ca-certificates &&\
-    rm -rf /var/lib/cache
+  rm -rf /var/lib/cache
 WORKDIR /app
 COPY --from=build /app/.env .
 COPY --from=build /app/bin/gotodo .

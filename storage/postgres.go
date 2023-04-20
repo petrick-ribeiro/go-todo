@@ -76,6 +76,7 @@ func (s *PostgresStorage) Insert(todo *types.Todo) error {
 
 func (s *PostgresStorage) Update(ut *types.Todo, id uint64) (*types.Todo, error) {
 	todo := types.Todo{}
+
 	result := s.db.First(&todo, id)
 	if result.Error != nil {
 		return nil, result.Error
@@ -100,5 +101,17 @@ func (s *PostgresStorage) Update(ut *types.Todo, id uint64) (*types.Todo, error)
 	return &todo, nil
 }
 
-func (s *PostgresStorage) Delete() {
+func (s *PostgresStorage) Delete(id uint64) (*types.Todo, error) {
+	todo := types.Todo{}
+
+	result := s.db.First(&todo, id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	if result := s.db.Delete(&todo, id); result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &todo, nil
 }
