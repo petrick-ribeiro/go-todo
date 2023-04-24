@@ -44,5 +44,7 @@ func main() {
 	srv := api.NewAPIServer(apiPort, db)
 
 	// Start the server
-	srv.Run()
+	if err := srv.Run(); err != nil {
+		log.Fatal(err)
+	}
 }
