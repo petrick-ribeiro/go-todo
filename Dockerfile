@@ -1,4 +1,4 @@
-# Build the goto binary
+# Build the binary
 FROM golang:1.20-alpine3.17 AS build
 RUN apk update
 WORKDIR /app

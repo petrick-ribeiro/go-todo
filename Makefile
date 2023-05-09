@@ -1,10 +1,4 @@
-build:
-	@go build -o bin/gotodo
-
-run: build
-	@./bin/gotodo
-
-up:
+deploy:
 	@docker-compose up -d --build
-down:
+destroy:
 	@docker-compose down
