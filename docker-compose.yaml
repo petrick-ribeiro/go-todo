@@ -4,15 +4,29 @@ networks:
   api_net:
 
 services:
+  client:
+    image: todo-client:1.0.0
+    build:
+      context: ./client/
+      dockerfile: Dockerfile
+    container_name: client
+    restart: always
+    ports:
+      - 80:80
+    networks:
+      - api_net
+    depends_on:
+      - api
+
   api:
-    image: gotodo:1.0.0
+    image: todo-api:1.0.0
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: gotodo
+    container_name: api
     restart: always
-    ports:
-      - 9000:9000
+    # ports:
+    #   - 9000:9000
     networks:
       - api_net
     depends_on:
